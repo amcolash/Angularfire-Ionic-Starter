@@ -1,0 +1,10 @@
+{
+  "name": "myapp",
+  "version": "1.0.0",
+  "description": "My App",
+  "devDependencies": {
+    "bower": "^1.3.3",
+    "gulp-util": "^2.2.14",
+    "shelljs": "^0.3.0"
+  }
+}

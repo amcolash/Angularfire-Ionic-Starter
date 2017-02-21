@@ -1,0 +1,24 @@
+/* Custom Progressbar */
+progress::-moz-progress-bar {
+  background: #444444;
+}
+
+progress::-webkit-progress-value {
+  background: #444444;
+}
+
+progress {
+  color: #444444;
+  border: 1px solid #0063a6;
+  background: #fff;
+}
+
+/* Custom file upload button */
+.file-upload {
+  color: #aaa;
+}
+
+.file-upload input.file-input {
+  visibility: hidden;
+  width: 0;
+}

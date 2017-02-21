@@ -1,0 +1,33 @@
+<ion-view title="Upload Files">
+    <ion-nav-buttons side="left">
+      <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+    </ion-nav-buttons>
+
+    <ion-content class="has-header">
+    <div class="list">
+
+      <ion-item ng-if="$parent.fileList.length == 0">No files uploaded yet!</ion-item>
+
+      <ion-item ng-repeat="file in $parent.fileList">
+        <a ng-href="{{file.url}}">{{file.name}}</a>, original name: {{file.original}}, uploaded: {{file.date}}
+      </ion-item>
+
+      <label class="button button-full button-dark file-upload">
+        <i class="icon ion-upload placeholder-icon"></i>
+        {{$parent.$parent.$parent.files ? $parent.$parent.$parent.files[0].name : "Choose File"}}
+        <input type="file" class="file-input" file-input="$parent.$parent.$parent.files"/>
+      </label>
+
+      <button class="button button-full button-dark" ng-click="uploadFile()">Add</button>
+
+      <div class="padding center-image" ng-show="$parent.uploadProgress > 0 && $parent.uploadProgress < 100">
+        <ion-spinner text-center></ion-spinner>
+      </div>
+      <progress ng-show="$parent.uploadProgress > 0" ng-value="$parent.uploadProgress" max="100"></progress>
+    </div>
+
+    <ion-footer-bar ng-show="$parent.showComplete" align-title="center" class="bar-positive">
+      Upload Successful
+    </ion-footer-bar>
+  </ion-content>
+</ion-view>
