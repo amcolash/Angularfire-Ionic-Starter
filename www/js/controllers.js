@@ -35,7 +35,8 @@ angular.module('app.controllers', [])
   });
 
   $scope.uploadProgress = 0;
-  $scope.showComplete = false;
+  $scope.showSuccess = false;
+  $scope.showError = false;
 
   $scope.uploadFile = function() {
     if ($scope.files !== undefined) {
@@ -53,7 +54,7 @@ angular.module('app.controllers', [])
         $scope.$apply();
       }, function(error) {
         // Handle unsuccessful uploads
-        $scope.uploadProgress = 0;
+        $scope.showError = true;
         console.error(error);
       }, function() {
         // Handle successful uploads
@@ -68,16 +69,18 @@ angular.module('app.controllers', [])
           url: downloadURL,
         }
 
-        $scope.fileList.$add(file);
-
-        $scope.showComplete = true;
-        $scope.uploadProgress = 0;
-
         console.log("upload complete");
 
-        $timeout(function() {
-          $scope.showComplete = false;
-        }, 2500);
+        $scope.fileList.$add(file);
+        $scope.showSuccess = true;
+      }
+      $scope.uploadProgress = 0;
+
+
+      $timeout(function() {
+        $scope.showSuccess = false;
+        $scope.showError = false;
+      }, 2500);
       });
     } else {
       console.error("No file selected to upload!");

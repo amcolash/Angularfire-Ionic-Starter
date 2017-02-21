@@ -26,8 +26,11 @@
       <progress ng-show="$parent.uploadProgress > 0" ng-value="$parent.uploadProgress" max="100"></progress>
     </div>
 
-    <ion-footer-bar ng-show="$parent.showComplete" align-title="center" class="bar-positive">
-      Upload Successful
+    <ion-footer-bar ng-show="$parent.uploadSuccess" align-title="center" class="bar-positive">
+      Upload successful
+    </ion-footer-bar>
+    <ion-footer-bar ng-show="$parent.uploadError" align-title="center" class="bar-assertive">
+      Upload error, please try again.
     </ion-footer-bar>
   </ion-content>
 </ion-view>
