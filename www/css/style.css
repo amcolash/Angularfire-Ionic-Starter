@@ -1,14 +1,14 @@
 /* Custom Progressbar */
 progress::-moz-progress-bar {
-  background: #444444;
+  background: #444;
 }
 
 progress::-webkit-progress-value {
-  background: #444444;
+  background: #444;
 }
 
 progress {
-  color: #444444;
+  color: #444;
   border: 1px solid #0063a6;
   background: #fff;
 }
@@ -18,7 +18,19 @@ progress {
   color: #aaa;
 }
 
-.file-upload input.file-input {
+.file-upload .file-input {
   visibility: hidden;
   width: 0;
+}
+
+/* Custom trash icon style */
+.ion-trash-a {
+  padding: 6px 10px;
+  margin-left: 6px;
+  border-radius: 3px;
+  font-size: 21px;
+  vertical-align: middle;
+  color: #ddd;
+  background-color: #444;
+  cursor: pointer;
 }

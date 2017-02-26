@@ -48,7 +48,10 @@ angular.module('app.factories', [])
             }
           );
 
-          $state.go('app.dashboard');
+          if ($state.current.name === "app.login") {
+            console.log("dashboard time!")
+            $state.go('app.dashboard');
+          }
         }).catch(function(error) {
           deferred.resolve(
             {

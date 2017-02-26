@@ -7,15 +7,17 @@ angular.module('app.controllers', [])
   User.then(function(data) {
     $scope.auth = data.auth;
     $scope.settings = data.settings;
+    $scope.fileList = data.fileList;
   });
 
   $scope.signOut = function() {
     $scope.settings.$destroy();
+    $scope.fileList.$destroy();
     $scope.auth.$signOut();
   }
 })
 
-.controller('LoginController', function($scope, User) {
+.controller('LoginController', function($scope, $state, User) {
   User.then(function(data) {
     $scope.auth = data.auth;
   });
@@ -58,33 +60,45 @@ angular.module('app.controllers', [])
         console.error(error);
       }, function() {
         // Handle successful uploads
-        var downloadURL = uploadTask.snapshot.downloadURL;
-        // Remove token from the url
-        downloadURL = downloadURL.substring(0, downloadURL.indexOf('&token'));
+        var dateObj = new Date();
 
         var file = {
-          date: new Date().toDateString(),
+          date: dateObj.toDateString(),
+          time: dateObj.toTimeString(),
           name: name,
           original: originalName,
-          url: downloadURL,
+          url: uploadTask.snapshot.downloadURL,
         }
 
         console.log("upload complete");
 
         $scope.fileList.$add(file);
         $scope.showSuccess = true;
-      }
-      $scope.uploadProgress = 0;
+      })
+
+      uploadTask.then(function() {
+        $scope.uploadProgress = 0;
+
+        $timeout(function() {
+          $scope.showSuccess = false;
+          $scope.showError = false;
+        }, 3500);
+      })
 
 
-      $timeout(function() {
-        $scope.showSuccess = false;
-        $scope.showError = false;
-      }, 2500);
-      });
     } else {
       console.error("No file selected to upload!");
     }
+  }
+
+  $scope.removeFile = function(file) {
+    var name = file.name;
+    var uploadTask = $scope.storage.child(name).delete().then(function() {
+      console.log("successfully removed file")
+      $scope.fileList.$remove(file);
+    }).catch(function(error) {
+      // Something went wrong
+    });
   }
 })
 
@@ -100,6 +114,3 @@ angular.module('app.controllers', [])
     });
   });
 })
-
-
-;

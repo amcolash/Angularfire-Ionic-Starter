@@ -43,11 +43,13 @@ var ionicApp = angular.module('app', [
   $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, error) {
     // Prevent going back to the login page after a successful authentication
     if (toState.name === 'app.login' && User.auth !== undefined && User.auth.authData !== null && User.auth.authData !== undefined) {
-      event.preventDefault();
+      console.log('dahsboard timez')
+      $state.go('dahsboard');
     }
   })
 }])
 
+// If this is a desktop app, might want to disable drag scrolling
 // .config(function($ionicConfigProvider) {
 //   $ionicConfigProvider.scrolling.jsScrolling(false);
 // })
@@ -77,7 +79,7 @@ var ionicApp = angular.module('app', [
     })
 
     .state('app.dashboard', {
-      url: '/dashboard',
+      url: '/',
       views: {
         'menuContent': {
           templateUrl: 'templates/dashboard.html',
@@ -110,7 +112,7 @@ var ionicApp = angular.module('app', [
     ;
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/login');
+  $urlRouterProvider.otherwise('/app/');
 })
 
 ;

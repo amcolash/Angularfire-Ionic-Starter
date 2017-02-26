@@ -9,7 +9,9 @@
       <ion-item ng-if="$parent.fileList.length == 0">No files uploaded yet!</ion-item>
 
       <ion-item ng-repeat="file in $parent.fileList">
-        <a ng-href="{{file.url}}">{{file.name}}</a>, original name: {{file.original}}, uploaded: {{file.date}}
+        <a ng-href="{{file.url}}">{{file.name}}</a>,
+        original name: {{file.original}}, uploaded: {{file.date}} @ {{file.time}}
+        <i class="icon ion-trash-a" ng-click="removeFile(file)"></i>
       </ion-item>
 
       <label class="button button-full button-dark file-upload">
@@ -23,13 +25,13 @@
       <div class="padding center-image" ng-show="$parent.uploadProgress > 0 && $parent.uploadProgress < 100">
         <ion-spinner text-center></ion-spinner>
       </div>
-      <progress ng-show="$parent.uploadProgress > 0" ng-value="$parent.uploadProgress" max="100"></progress>
+      <progress ng-show="$parent.uploadProgress > 0 && $parent.uploadProgress < 100" ng-value="$parent.uploadProgress" max="100"></progress>
     </div>
 
-    <ion-footer-bar ng-show="$parent.uploadSuccess" align-title="center" class="bar-positive">
+    <ion-footer-bar ng-show="$parent.showSuccess" align-title="center" class="bar-positive">
       Upload successful
     </ion-footer-bar>
-    <ion-footer-bar ng-show="$parent.uploadError" align-title="center" class="bar-assertive">
+    <ion-footer-bar ng-show="$parent.showError" align-title="center" class="bar-assertive">
       Upload error, please try again.
     </ion-footer-bar>
   </ion-content>

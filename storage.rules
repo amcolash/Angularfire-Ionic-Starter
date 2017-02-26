@@ -1,0 +1,10 @@
+// These rules only allow the current user to read/write to their own portion of the file storage
+
+service firebase.storage {
+  match /b/angularfire-ionic-starter.appspot.com/o {
+    match /users/{userId}/{allPaths=**} {
+      // handle deleting a file, uploads must be smaller than 5mb
+      allow read, write: if request.auth.uid == userId && (request.resource == null || request.resource.size < 5 * 1024 * 1024);
+    }
+  }
+}
