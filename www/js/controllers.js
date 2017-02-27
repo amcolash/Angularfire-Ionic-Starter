@@ -1,33 +1,33 @@
 angular.module('app.controllers', [])
 
 .controller('AppController', function($scope) {
+  console.log('init app controller')
 })
 
-.controller('MenuController', function($scope, $state, User) {
-  User.then(function(data) {
-    $scope.auth = data.auth;
-    $scope.settings = data.settings;
-    $scope.fileList = data.fileList;
-  });
+.controller('MenuController', function($scope, $state, Auth) {
+  console.log('init menu controller')
 
   $scope.signOut = function() {
-    $scope.settings.$destroy();
-    $scope.fileList.$destroy();
-    $scope.auth.$signOut();
+    if ($scope.settings) {
+      $scope.settings.$destroy();
+    }
+
+    if ($scope.fileList) {
+      $scope.fileList.$destroy();
+    }
+
+    Auth.$signOut();
   }
 })
 
-.controller('LoginController', function($scope, $state, User) {
-  User.then(function(data) {
-    $scope.auth = data.auth;
-  });
+.controller('LoginController', function($scope, $state, Auth) {
+  $scope.auth = Auth;
+
+  console.log('init login controller')
 })
 
-.controller('DashboardController', function($scope, $state, User) {
-  User.then(function(data) {
-    $scope.auth = data.auth;
-    $scope.settings = data.settings;
-  });
+.controller('DashboardController', function($scope, $state) {
+  console.log('init dashboard controller')
 })
 
 .controller('UploadController', function($scope, $timeout, User) {

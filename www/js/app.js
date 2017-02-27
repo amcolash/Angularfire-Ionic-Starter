@@ -8,8 +8,7 @@ var ionicApp = angular.module('app', [
   'firebase',
   'app.controllers',
   'app.directives',
-  'app.factories',
-  'app.config'
+  'app.factories'
 ])
 
 .run(function($ionicPlatform) {
@@ -30,23 +29,47 @@ var ionicApp = angular.module('app', [
   });
 })
 
-.run(['$rootScope', '$state', 'User', function($rootScope, $state, User) {
+.run(['$rootScope', '$state', 'Auth', function($rootScope, $state, Auth) {
+  // Firebase and authentication init
+
+  // TODO: Change these to match your own application configuration
+  var config = {
+    apiKey: "AIzaSyAcgOtX8dqawOK7Vuu4ax3fiFg46KhoOKY",
+    authDomain: "angularfire-ionic-starter.firebaseapp.com",
+    databaseURL: "https://angularfire-ionic-starter.firebaseio.com",
+    storageBucket: "angularfire-ionic-starter.appspot.com",
+    messagingSenderId: "210927824483"
+  };
+  firebase.initializeApp(config);
+
   $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
     // We can catch the error thrown when the $requireSignIn promise is rejected
     // and redirect the user back to the home page
     if (error === 'AUTH_REQUIRED') {
-      console.log('not authenticated');
+      console.error('not authenticated');
       $state.go('app.login');
     }
   });
 
-  $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, error) {
+  $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, error, $state) {
     // Prevent going back to the login page after a successful authentication
-    if (toState.name === 'app.login' && User.auth !== undefined && User.auth.authData !== null && User.auth.authData !== undefined) {
-      console.log('dahsboard timez')
-      $state.go('dahsboard');
+    if (toState.name === 'app.login' && Auth.$getAuth()) {
+      event.preventDefault();
     }
   })
+
+  // When logging in / logging out, change states automatically
+  Auth.$onAuthStateChanged(function(authData) {
+    if (authData) {
+      // Go to dashboard after logging in
+      if ($state.current.name === "app.login") {
+        $state.go('app.dashboard');
+      }
+    } else {
+      // Go back to login when logging out
+      $state.go('app.login');
+    }
+  });
 }])
 
 // If this is a desktop app, might want to disable drag scrolling
@@ -58,14 +81,9 @@ var ionicApp = angular.module('app', [
   $stateProvider
 
     .state('app', {
-      url: '/app',
       abstract: true,
       templateUrl: 'templates/menu.html',
-      resolve: {
-        function(User) {
-          return User;
-        }
-      }
+      controller: 'MenuController'
     })
 
     .state('app.login', {
@@ -86,33 +104,60 @@ var ionicApp = angular.module('app', [
           controller: 'DashboardController'
         }
       },
+      resolve: {
+        // controller will not be loaded until $requireSignIn resolves
+        // Auth refers to our $firebaseAuth wrapper in the factory below
+        'currentAuth': ['Auth', function(Auth) {
+          // $requireSignIn returns a promise so the resolve waits for it to complete
+          // If the promise is rejected, it will throw a $stateChangeError (see above)
+          return Auth.$requireSignIn();
+        }]
+      }
     })
 
-    .state('app.upload', {
-      url: '/upload',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/upload.html',
-          controller: 'UploadController'
-        }
-      },
-    })
-
-    .state('app.settings', {
-      url: '/settings',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/settings.html',
-          controller: 'SettingsController'
-        }
-      },
-    })
+    // .state('app.upload', {
+    //   url: '/upload',
+    //   views: {
+    //     'menuContent': {
+    //       templateUrl: 'templates/upload.html',
+    //       controller: 'UploadController'
+    //     }
+    //   },
+    //   resolve: {
+    //     // controller will not be loaded until $requireSignIn resolves
+    //     // Auth refers to our $firebaseAuth wrapper in the factory below
+    //     "currentAuth": ["Auth", function(Auth) {
+    //       // $requireSignIn returns a promise so the resolve waits for it to complete
+    //       // If the promise is rejected, it will throw a $stateChangeError (see above)
+    //       return Auth.$requireSignIn();
+    //     }]
+    //   }
+    // })
+    //
+    // .state('app.settings', {
+    //   url: '/settings',
+    //   views: {
+    //     'menuContent': {
+    //       templateUrl: 'templates/settings.html',
+    //       controller: 'SettingsController'
+    //     }
+    //   },
+    //   resolve: {
+    //     // controller will not be loaded until $requireSignIn resolves
+    //     // Auth refers to our $firebaseAuth wrapper in the factory below
+    //     "currentAuth": ["Auth", function(Auth) {
+    //       // $requireSignIn returns a promise so the resolve waits for it to complete
+    //       // If the promise is rejected, it will throw a $stateChangeError (see above)
+    //       return Auth.$requireSignIn();
+    //     }]
+    //   }
+    // })
 
 
     ;
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/');
+  $urlRouterProvider.otherwise('/');
 })
 
 ;
