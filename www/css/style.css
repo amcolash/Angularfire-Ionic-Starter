@@ -1,6 +1,8 @@
+/* Universal stuff */
 .center-text {
   text-align: center;
 }
+
 
 /* Custom Progressbar */
 progress::-moz-progress-bar {
