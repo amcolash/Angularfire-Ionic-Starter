@@ -1,12 +1,6 @@
 angular.module('app.controllers', [])
 
-.controller('AppController', function($scope) {
-  console.log('init app controller')
-})
-
-.controller('MenuController', function($scope, $state, Auth) {
-  console.log('init menu controller')
-
+.controller('MenuController', ['$scope', 'Auth', function($scope, Auth) {
   $scope.signOut = function() {
     if ($scope.settings) {
       $scope.settings.$destroy();
@@ -18,20 +12,17 @@ angular.module('app.controllers', [])
 
     Auth.$signOut();
   }
-})
+}])
 
-.controller('LoginController', function($scope, $state, Auth) {
+.controller('LoginController', ['$scope', 'Auth', function($scope, Auth) {
   $scope.auth = Auth;
+}])
 
-  console.log('init login controller')
+.controller('DashboardController', function() {
 })
 
-.controller('DashboardController', function($scope, $state) {
-  console.log('init dashboard controller')
-})
-
-.controller('UploadController', function($scope, $timeout, User) {
-  User.then(function(data) {
+.controller('UploadController', ['$scope', '$timeout', 'Storage', function($scope, $timeout, Storage) {
+  Storage.then(function(data) {
     $scope.fileList = data.fileList;
     $scope.storage = data.storage;
   });
@@ -42,7 +33,7 @@ angular.module('app.controllers', [])
 
   $scope.uploadFile = function() {
     if ($scope.files !== undefined) {
-      // Make the progress bar show up
+      // Make the progress bar show up at the beginning of the upload
       $scope.uploadProgress = 5;
 
       var file = $scope.files[0];
@@ -94,23 +85,20 @@ angular.module('app.controllers', [])
   $scope.removeFile = function(file) {
     var name = file.name;
     var uploadTask = $scope.storage.child(name).delete().then(function() {
-      console.log("successfully removed file")
+      console.log("successfully removed file");
       $scope.fileList.$remove(file);
     }).catch(function(error) {
-      // Something went wrong
+      console.error(error);
     });
   }
-})
+}])
 
-.controller('SettingsController', function($scope, $state, User) {
-  User.then(function(data) {
-    $scope.auth = data.auth;
-    $scope.settings = data.settings;
-
-    data.settings.$bindTo($scope, "settings").then(function(unbind) {
+.controller('SettingsController', ['$scope', '$state', 'Settings', function($scope, $state, Settings) {
+  Settings.then(function(data) {
+    data.$bindTo($scope, "settings").then(function(unbind) {
       $scope.$on('$ionicView.beforeLeave', function() {
         unbind();
       })
     });
   });
-})
+}])

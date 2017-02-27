@@ -22,8 +22,8 @@
 
       <button class="button button-full button-dark" ng-click="uploadFile()">Add</button>
 
-      <div class="padding center-image" ng-show="$parent.uploadProgress > 0 && $parent.uploadProgress < 100">
-        <ion-spinner text-center></ion-spinner>
+      <div class="padding center-text" ng-show="$parent.uploadProgress > 0 && $parent.uploadProgress < 100">
+        <ion-spinner></ion-spinner>
       </div>
       <progress ng-show="$parent.uploadProgress > 0 && $parent.uploadProgress < 100" ng-value="$parent.uploadProgress" max="100"></progress>
     </div>

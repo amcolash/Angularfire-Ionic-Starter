@@ -1,3 +1,7 @@
+.center-text {
+  text-align: center;
+}
+
 /* Custom Progressbar */
 progress::-moz-progress-bar {
   background: #444;

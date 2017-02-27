@@ -27,10 +27,6 @@ var ionicApp = angular.module('app', [
       StatusBar.styleDefault();
     }
   });
-})
-
-.run(['$rootScope', '$state', 'Auth', function($rootScope, $state, Auth) {
-  // Firebase and authentication init
 
   // TODO: Change these to match your own application configuration
   var config = {
@@ -41,6 +37,10 @@ var ionicApp = angular.module('app', [
     messagingSenderId: "210927824483"
   };
   firebase.initializeApp(config);
+})
+
+.run(['$rootScope', '$state', 'Auth', function($rootScope, $state, Auth) {
+  // Firebase and authentication init
 
   $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
     // We can catch the error thrown when the $requireSignIn promise is rejected
@@ -104,54 +104,46 @@ var ionicApp = angular.module('app', [
           controller: 'DashboardController'
         }
       },
+      // controller will not be loaded until $requireSignIn resolves
+      // Auth refers to our $firebaseAuth wrapper in the factory below
+      // $requireSignIn returns a promise so the resolve waits for it to complete
+      // If the promise is rejected, it will throw a $stateChangeError (see above)
       resolve: {
-        // controller will not be loaded until $requireSignIn resolves
-        // Auth refers to our $firebaseAuth wrapper in the factory below
         'currentAuth': ['Auth', function(Auth) {
-          // $requireSignIn returns a promise so the resolve waits for it to complete
-          // If the promise is rejected, it will throw a $stateChangeError (see above)
           return Auth.$requireSignIn();
         }]
       }
     })
 
-    // .state('app.upload', {
-    //   url: '/upload',
-    //   views: {
-    //     'menuContent': {
-    //       templateUrl: 'templates/upload.html',
-    //       controller: 'UploadController'
-    //     }
-    //   },
-    //   resolve: {
-    //     // controller will not be loaded until $requireSignIn resolves
-    //     // Auth refers to our $firebaseAuth wrapper in the factory below
-    //     "currentAuth": ["Auth", function(Auth) {
-    //       // $requireSignIn returns a promise so the resolve waits for it to complete
-    //       // If the promise is rejected, it will throw a $stateChangeError (see above)
-    //       return Auth.$requireSignIn();
-    //     }]
-    //   }
-    // })
-    //
-    // .state('app.settings', {
-    //   url: '/settings',
-    //   views: {
-    //     'menuContent': {
-    //       templateUrl: 'templates/settings.html',
-    //       controller: 'SettingsController'
-    //     }
-    //   },
-    //   resolve: {
-    //     // controller will not be loaded until $requireSignIn resolves
-    //     // Auth refers to our $firebaseAuth wrapper in the factory below
-    //     "currentAuth": ["Auth", function(Auth) {
-    //       // $requireSignIn returns a promise so the resolve waits for it to complete
-    //       // If the promise is rejected, it will throw a $stateChangeError (see above)
-    //       return Auth.$requireSignIn();
-    //     }]
-    //   }
-    // })
+    .state('app.upload', {
+      url: '/upload',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/upload.html',
+          controller: 'UploadController'
+        }
+      },
+      resolve: {
+        'currentAuth': ['Auth', function(Auth) {
+          return Auth.$requireSignIn();
+        }]
+      }
+    })
+
+    .state('app.settings', {
+      url: '/settings',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/settings.html',
+          controller: 'SettingsController'
+        }
+      },
+      resolve: {
+        'currentAuth': ['Auth', function(Auth) {
+          return Auth.$requireSignIn();
+        }]
+      }
+    })
 
 
     ;
