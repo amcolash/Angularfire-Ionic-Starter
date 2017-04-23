@@ -24,6 +24,15 @@ angular.module('app.controllers', [])
   }
 }])
 
+.controller('ErrorController', ['$interval', '$scope', '$state', function($interval, $scope, $state) {
+  $scope.check = $interval(function() {
+    if (navigator.onLine) {
+      $interval.cancel($scope.check);
+      $state.go('app.dashboard');
+    }
+  }, 3000);
+}])
+
 .controller('LoginController', ['$scope', 'Auth', function($scope, Auth) {
   $scope.auth = Auth;
 }])

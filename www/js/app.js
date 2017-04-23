@@ -51,10 +51,15 @@ var ionicApp = angular.module('app', [
     }
   });
 
-  $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, error, $state) {
+  $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, error) {
     // Prevent going back to the login page after a successful authentication
     if (toState.name === 'login' && Auth.$getAuth()) {
       event.preventDefault();
+    }
+
+    if (toState.name !== 'error' && !navigator.onLine) {
+      event.preventDefault();
+      $state.go('error');
     }
   })
 
@@ -85,6 +90,12 @@ var ionicApp = angular.module('app', [
       url: '/login',
       templateUrl: 'templates/login.html',
       controller: 'LoginController'
+    })
+
+    .state('error', {
+      url: '/error',
+      templateUrl: 'templates/error.html',
+      controller: 'ErrorController'
     })
 
     .state('app', {
