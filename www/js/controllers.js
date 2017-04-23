@@ -1,7 +1,17 @@
 angular.module('app.controllers', [])
 
-.controller('MenuController', ['$scope', 'Auth', function($scope, Auth) {
+.controller('MenuController', ['$scope', 'Auth', 'Settings', 'Storage', function($scope, Auth, Settings, Storage) {
+  Settings.then(function(data) {
+    $scope.settings = data;
+  });
+
+  Storage.then(function(data) {
+    $scope.fileList = data.fileList;
+    $scope.storage = data.storage;
+  });
+
   $scope.signOut = function() {
+    // Remember to clean up references to FireBase objects/arrays here, otherwise you will get a ton of errors on a logout.
     if ($scope.settings) {
       $scope.settings.$destroy();
     }

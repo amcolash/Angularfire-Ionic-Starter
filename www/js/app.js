@@ -47,13 +47,13 @@ var ionicApp = angular.module('app', [
     // and redirect the user back to the home page
     if (error === 'AUTH_REQUIRED') {
       console.error('not authenticated');
-      $state.go('app.login');
+      $state.go('login');
     }
   });
 
   $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, error, $state) {
     // Prevent going back to the login page after a successful authentication
-    if (toState.name === 'app.login' && Auth.$getAuth()) {
+    if (toState.name === 'login' && Auth.$getAuth()) {
       event.preventDefault();
     }
   })
@@ -61,13 +61,14 @@ var ionicApp = angular.module('app', [
   // When logging in / logging out, change states automatically
   Auth.$onAuthStateChanged(function(authData) {
     if (authData) {
+      console.log(authData)
       // Go to dashboard after logging in
-      if ($state.current.name === "app.login") {
+      if ($state.current.name === "login") {
         $state.go('app.dashboard');
       }
     } else {
       // Go back to login when logging out
-      $state.go('app.login');
+      $state.go('login');
     }
   });
 }])
@@ -80,31 +81,17 @@ var ionicApp = angular.module('app', [
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
 
+    .state('login', {
+      url: '/login',
+      templateUrl: 'templates/login.html',
+      controller: 'LoginController'
+    })
+
     .state('app', {
       abstract: true,
       templateUrl: 'templates/menu.html',
-      controller: 'MenuController'
-    })
-
-    .state('app.login', {
-      url: '/login',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/login.html',
-          controller: 'LoginController'
-        }
-      }
-    })
-
-    .state('app.dashboard', {
-      url: '/',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/dashboard.html',
-          controller: 'DashboardController'
-        }
-      },
-      // controller will not be loaded until $requireSignIn resolves
+      controller: 'MenuController',
+      // main app controller will not be loaded until $requireSignIn resolves
       // Auth refers to our $firebaseAuth wrapper in the factory below
       // $requireSignIn returns a promise so the resolve waits for it to complete
       // If the promise is rejected, it will throw a $stateChangeError (see above)
@@ -115,6 +102,16 @@ var ionicApp = angular.module('app', [
       }
     })
 
+    .state('app.dashboard', {
+      url: '/',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/dashboard.html',
+          controller: 'DashboardController'
+        }
+      }
+    })
+
     .state('app.upload', {
       url: '/upload',
       views: {
@@ -122,11 +119,6 @@ var ionicApp = angular.module('app', [
           templateUrl: 'templates/upload.html',
           controller: 'UploadController'
         }
-      },
-      resolve: {
-        'currentAuth': ['Auth', function(Auth) {
-          return Auth.$requireSignIn();
-        }]
       }
     })
 
@@ -137,14 +129,8 @@ var ionicApp = angular.module('app', [
           templateUrl: 'templates/settings.html',
           controller: 'SettingsController'
         }
-      },
-      resolve: {
-        'currentAuth': ['Auth', function(Auth) {
-          return Auth.$requireSignIn();
-        }]
       }
     })
-
 
     ;
 

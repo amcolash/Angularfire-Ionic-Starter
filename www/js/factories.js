@@ -10,7 +10,7 @@ angular.module('app.factories', [])
   var deferred = $q.defer();
 
   Auth.$onAuthStateChanged(function(authData) {
-    if (authData.uid) {
+    if (authData && authData.uid) {
       var ref = firebase.database().ref('users/' + authData.uid + '/settings');
       var settings = $firebaseObject(ref);
 
@@ -28,7 +28,7 @@ angular.module('app.factories', [])
   var deferred = $q.defer();
 
   Auth.$onAuthStateChanged(function(authData) {
-    if (authData.uid) {
+    if (authData && authData.uid) {
       var fileRef = firebase.database().ref('users/' + authData.uid + '/files');
       var fileList = $firebaseArray(fileRef);
 
