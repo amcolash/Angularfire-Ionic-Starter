@@ -12,9 +12,14 @@
     </div>
     <div ng-hide="auth.authData">
       <h1 class="text-center padding">Welcome to My App! Please log in to start.</h1>
-      <!--<button class="button button-block icon-left ion-social-facebook button-positive" ng-click="auth.$signInWithPopup('facebook')"> Login With Facebook</button> -->
-      <!-- <button class="button button-block icon-left ion-social-twitter button-calm" ng-click="auth.$signInWithPopup('twitter')"> Login With Twitter</button> -->
+      <button class="button button-block icon-left ion-social-facebook button-positive" ng-click="auth.$signInWithPopup('facebook')"> Login With Facebook</button>
+      <button class="button button-block icon-left ion-social-twitter button-calm" ng-click="auth.$signInWithPopup('twitter')"> Login With Twitter</button>
       <button class="button button-block icon-left ion-social-google button-assertive" ng-click="auth.$signInWithPopup('google')"> Login With Google</button>
+      <br>
+      <button class="button button-block button-dark" ng-click="auth.$signInAnonymously()">
+        <span class="span-button">Skip for Now</span>
+        <i class="icon ion-ios-arrow-forward"></i>
+      </button>
     </div>
   </ion-content>
 </ion-view>

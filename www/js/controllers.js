@@ -112,7 +112,7 @@ angular.module('app.controllers', [])
   }
 }])
 
-.controller('SettingsController', ['$scope', '$state', 'Settings', function($scope, $state, Settings) {
+.controller('SettingsController', ['$scope', '$state', 'Auth', 'Settings', function($scope, $state, Auth, Settings) {
   Settings.then(function(data) {
     data.$bindTo($scope, "settings").then(function(unbind) {
       $scope.$on('$ionicView.beforeLeave', function() {
@@ -120,4 +120,88 @@ angular.module('app.controllers', [])
       })
     });
   });
+
+  $scope.auth = Auth;
+
+  $scope.googleAuth;
+  $scope.facebookAuth;
+  $scope.twitterAuth;
+
+  $scope.updateProviders = function (init) {
+    $scope.googleAuth = undefined;
+    $scope.facebookAuth = undefined;
+    $scope.twitterAuth = undefined;
+
+    var providerData = $scope.auth.$getAuth().providerData;
+    console.log(providerData)
+    for (var i = 0; i < providerData.length; i++) {
+      if (providerData[i].providerId === "google.com") {
+        $scope.googleAuth = providerData[i];
+      } else if (providerData[i].providerId === "facebook.com") {
+        $scope.facebookAuth = providerData[i];
+      } else if (providerData[i].providerId === "twitter.com") {
+        $scope.twitterAuth = providerData[i];
+      }
+    }
+
+    if (!init) {
+      $scope.$apply();
+    }
+  }
+
+  // Do this after the function is defined
+  $scope.updateProviders(true);
+
+  $scope.unlink = function (authMethod) {
+    if (authMethod === "google") {
+      var id = $scope.googleAuth.providerId;
+    } else if (authMethod === "facebook") {
+      var id = $scope.facebookAuth.providerId;
+    } else if (authMethod === "twitter") {
+      var id = $scope.twitterAuth.providerId;
+    }
+
+    if (id) {
+      $scope.auth.$getAuth().unlink(id).then(function (result) {
+        console.log("Success unlinking: " + authMethod);
+        $scope.updateProviders();
+      }).catch(function (error) {
+        console.error("Error: " + JSON.stringify(error));
+        $scope.updateProviders();
+      });
+    }
+  }
+
+  $scope.link = function (authMethod) {
+    console.log($scope.auth)
+
+    if (authMethod === "google") {
+      var credential = new firebase.auth.GoogleAuthProvider();
+    } else if (authMethod === "twitter") {
+      var credential = new firebase.auth.TwitterAuthProvider();
+    } else if (authMethod === "facebook") {
+      var credential = new firebase.auth.FacebookAuthProvider();
+    }
+
+    if (ionic.Platform.isAndroid() && window.cordova) {
+      $scope.auth.$getAuth().link(credential).then(function (result) {
+        console.log("Success linking: " + authMethod);
+        $scope.updateProviders();
+      }).catch(function (error) {
+        console.error("Error: " + JSON.stringify(error));
+        $scope.updateProviders();
+      });
+    } else {
+      $scope.auth.$getAuth().linkWithPopup(credential).then(function (result) {
+        console.log("Success linking: " + authMethod);
+        $scope.updateProviders();
+      }).catch(function (error) {
+        console.error("Error: " + JSON.stringify(error));
+        $scope.updateProviders();
+      });
+    }
+  }, function (error) {
+    console.error("Error: " + JSON.stringify(error));
+    $scope.updateProviders();
+  }
 }])

@@ -5,8 +5,35 @@
   <ion-content class="has-header">
     <div class="list">
       <div class="list list-inset">
+        
         <ion-toggle ng-model="$parent.settings.test" toggle-class="toggle-calm">TEST</ion-toggle>
+        
+        <div class="inset-button">
+          <button class="button button-block icon-left ion-social-facebook button-positive" ng-click="$parent.facebookAuth ? unlink('facebook') : link('facebook')"
+          ng-disabled="!$parent.googleAuth && $parent.facebookAuth && !$parent.twitterAuth">
+            {{$parent.facebookAuth ? "Disconnect" : "Connect"}} Facebook Account
+          </button>
+        </div>
+      
+        <div class="inset-button">
+          <button class="button button-block icon-left ion-social-twitter button-calm" ng-click="$parent.twitterAuth ? unlink('twitter') : link('twitter')"
+          ng-disabled="!$parent.googleAuth && !$parent.facebookAuth && $parent.twitterAuth">
+            {{$parent.twitterAuth ? "Disconnect" : "Connect"}} Twitter Account
+          </button>
+        </div>
+      
+        <div class="inset-button">
+          <button class="button button-block icon-left ion-social-google button-assertive" ng-click="$parent.googleAuth ? unlink('google') : link('google')"
+          ng-disabled="$parent.googleAuth && !$parent.facebookAuth && !$parent.twitterAuth">
+            {{$parent.googleAuth ? "Disconnect" : "Connect"}} Google Account
+          </button>
+        </div>
       </div>
+
+      <div class="bar bar-assertive" ng-if="!$parent.googleAuth && !$parent.facebookAuth && !$parent.twitterAuth">
+        <span class="title">WARNING: Your account has not been linked to a social media account. If you log out, all user data will be lost!</span>
+      </div>
+
     </div>
   </ion-content>
 </ion-view>
